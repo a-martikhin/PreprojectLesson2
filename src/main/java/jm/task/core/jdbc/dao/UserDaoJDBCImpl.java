@@ -5,7 +5,6 @@ import jm.task.core.jdbc.util.Util;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
@@ -14,7 +13,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable()  {
-        Statement statement;
+        PreparedStatement preparedStatement;
         String dropOldTable = "DROP TABLE IF EXISTS users";
         String createNewTable = "CREATE TABLE users " +
                 "(id BIGINT not NULL primary key auto_increment, " +
@@ -23,9 +22,8 @@ public class UserDaoJDBCImpl implements UserDao {
                 "age TINYINT not NULL)";
 
         try(Connection connection = Util.connectToBase()){
-            statement = connection.createStatement();
-            statement.execute(dropOldTable);
-            statement.execute(createNewTable);
+            connection.prepareStatement(dropOldTable);
+            connection.prepareStatement(createNewTable).execute();
 
         } catch (SQLException throwables){
             throwables.printStackTrace();
@@ -33,12 +31,11 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable()  {
-        Statement statement;
+
         String dropTable = "DROP TABLE IF EXISTS users";
 
         try(Connection connection = Util.connectToBase()){
-            statement = connection.createStatement();
-            statement.execute(dropTable);
+            connection.prepareStatement(dropTable).execute();
 
         } catch (SQLException throwables){
             throwables.printStackTrace();
@@ -48,13 +45,12 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
 
-        Statement statement;
         String insertUser = "INSERT INTO users(name, lastName, age) " +
                 "VALUES ('"+ name +"', '" + lastName + "', '" + age + "' ) ";
 
         try(Connection connection = Util.connectToBase()){
-            statement = connection.createStatement();
-            statement.execute(insertUser);
+            connection.prepareStatement(insertUser).execute();
+
             System.out.println("User с именем - " + name + " добавлен в базу данных");
 
         } catch (SQLException throwables){
@@ -63,12 +59,11 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        Statement statement;
+
         String deletUser = "DELETE FROM users where ID= " + id;
 
         try(Connection connection = Util.connectToBase()){
-            statement = connection.createStatement();
-            statement.execute(deletUser);
+            connection.prepareStatement(deletUser).execute();
 
         } catch (SQLException throwables){
             throwables.printStackTrace();
@@ -80,8 +75,7 @@ public class UserDaoJDBCImpl implements UserDao {
         List<User> user = new ArrayList<>();
         String command = "SELECT * FROM users ";
         try(Connection connection = Util.connectToBase()){
-            PreparedStatement preparedStatement = connection.prepareStatement(command);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = connection.prepareStatement(command).executeQuery();
             while(resultSet.next()){
                 long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
@@ -99,12 +93,10 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        Statement statement;
         String cleanTable = "TRUNCATE TABLE users";
 
         try(Connection connection = Util.connectToBase()){
-            statement = connection.createStatement();
-            statement.execute(cleanTable);
+            connection.prepareStatement(cleanTable).execute();
 
         } catch (SQLException throwables){
             throwables.printStackTrace();
