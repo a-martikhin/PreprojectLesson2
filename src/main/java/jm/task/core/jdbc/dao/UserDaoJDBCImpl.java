@@ -13,16 +13,13 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable()  {
-        PreparedStatement preparedStatement;
-        String dropOldTable = "DROP TABLE IF EXISTS users";
-        String createNewTable = "CREATE TABLE users " +
+        String createNewTable = "CREATE TABLE IF not exists users " +
                 "(id BIGINT not NULL primary key auto_increment, " +
                 "name VARCHAR(255), " +
                 "lastName VARCHAR (255), " +
                 "age TINYINT not NULL)";
 
         try(Connection connection = Util.connectToBase()){
-            connection.prepareStatement(dropOldTable);
             connection.prepareStatement(createNewTable).execute();
 
         } catch (SQLException throwables){
