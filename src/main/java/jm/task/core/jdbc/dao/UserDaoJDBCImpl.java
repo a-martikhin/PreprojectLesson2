@@ -12,7 +12,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
-    public void createUsersTable()  {
+    public void createUsersTable() {
         String createNewTable = "CREATE TABLE IF not exists users " +
                 "(id BIGINT not NULL primary key auto_increment, " +
                 "name VARCHAR(255), " +
@@ -27,7 +27,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
-    public void dropUsersTable()  {
+    public void dropUsersTable() {
 
         String dropTable = "DROP TABLE IF EXISTS users";
 
