@@ -11,9 +11,9 @@ public class Util {
 
     public static Connection connectToBase() {
         Connection connection = null;
-        try{
+        try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (SQLException throwables){
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return connection;

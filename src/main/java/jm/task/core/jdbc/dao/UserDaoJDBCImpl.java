@@ -3,7 +3,10 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +22,10 @@ public class UserDaoJDBCImpl implements UserDao {
                 "lastName VARCHAR (255), " +
                 "age TINYINT not NULL)";
 
-        try(Connection connection = Util.connectToBase()){
+        try (Connection connection = Util.connectToBase()) {
             connection.prepareStatement(createNewTable).execute();
 
-        } catch (SQLException throwables){
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
@@ -31,49 +34,49 @@ public class UserDaoJDBCImpl implements UserDao {
 
         String dropTable = "DROP TABLE IF EXISTS users";
 
-        try(Connection connection = Util.connectToBase()){
+        try (Connection connection = Util.connectToBase()) {
             connection.prepareStatement(dropTable).execute();
 
-        } catch (SQLException throwables){
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
     }
 
     public void saveUser(String name, String lastName, byte age) {
-
-        String insertUser = "INSERT INTO users(name, lastName, age) " +
-                "VALUES ('"+ name +"', '" + lastName + "', '" + age + "' ) ";
-
-        try(Connection connection = Util.connectToBase()){
-            connection.prepareStatement(insertUser).execute();
-
+        String insertUser = "INSERT INTO users(name, lastName, age) VALUES (?, ?, ?)";
+        try (Connection connection = Util.connectToBase()) {
+            PreparedStatement statement = connection.prepareStatement(insertUser);
+            statement.setString(1, name);
+            statement.setString(2, lastName);
+            statement.setInt(3, age);
+            statement.execute();
             System.out.println("User с именем - " + name + " добавлен в базу данных");
 
-        } catch (SQLException throwables){
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
     public void removeUserById(long id) {
 
-        String deletUser = "DELETE FROM users where ID= " + id;
+        String deletUser = "DELETE FROM users where ID=?";
 
-        try(Connection connection = Util.connectToBase()){
-            connection.prepareStatement(deletUser).execute();
+        try (Connection connection = Util.connectToBase()) {
+            PreparedStatement statement = connection.prepareStatement(deletUser);
+            statement.setLong(1, id);
+            statement.execute();
 
-        } catch (SQLException throwables){
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
     }
 
     public List<User> getAllUsers() {
         List<User> user = new ArrayList<>();
         String command = "SELECT * FROM users ";
-        try(Connection connection = Util.connectToBase()){
+        try (Connection connection = Util.connectToBase()) {
             ResultSet resultSet = connection.prepareStatement(command).executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
                 String lastName = resultSet.getString("lastName");
@@ -83,7 +86,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 user.add(temp);
 
             }
-        } catch (SQLException throwables){
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return user;
@@ -92,12 +95,11 @@ public class UserDaoJDBCImpl implements UserDao {
     public void cleanUsersTable() {
         String cleanTable = "TRUNCATE TABLE users";
 
-        try(Connection connection = Util.connectToBase()){
+        try (Connection connection = Util.connectToBase()) {
             connection.prepareStatement(cleanTable).execute();
 
-        } catch (SQLException throwables){
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
     }
 }
