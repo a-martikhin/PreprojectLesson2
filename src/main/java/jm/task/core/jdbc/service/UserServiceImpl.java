@@ -11,10 +11,12 @@ public class UserServiceImpl implements UserService {
     private final static UserDao userDao = new UserDaoJDBCImpl();
 
     public void createUsersTable() {
+
         userDao.createUsersTable();
     }
 
     public void dropUsersTable() {
+
         userDao.dropUsersTable();
     }
 
@@ -23,16 +25,19 @@ public class UserServiceImpl implements UserService {
     }
 
     public void removeUserById(long id) {
+
         userDao.removeUserById(id);
     }
 
     public List<User> getAllUsers() {
+
         List<User> userList = userDao.getAllUsers();
         System.out.println(userList);
         return userList;
     }
 
     public void cleanUsersTable() {
+
         userDao.cleanUsersTable();
     }
 }
