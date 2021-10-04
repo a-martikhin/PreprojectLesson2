@@ -8,37 +8,37 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserDao USERDAO = new UserDaoJDBCImpl();
+    private UserDao UserDao = new UserDaoJDBCImpl();
 
     public void createUsersTable() {
 
-        USERDAO.createUsersTable();
+        UserDao.createUsersTable();
     }
 
     public void dropUsersTable() {
 
-        USERDAO.dropUsersTable();
+        UserDao.dropUsersTable();
     }
 
     public void saveUser(String name, String lastName, byte age) {
 
-        USERDAO.saveUser(name, lastName, age);
+        UserDao.saveUser(name, lastName, age);
     }
 
     public void removeUserById(long id) {
 
-        USERDAO.removeUserById(id);
+        UserDao.removeUserById(id);
     }
 
     public List<User> getAllUsers() {
 
-        List<User> userList = USERDAO.getAllUsers();
+        List<User> userList = UserDao.getAllUsers();
         System.out.println(userList);
         return userList;
     }
 
     public void cleanUsersTable() {
 
-        USERDAO.cleanUsersTable();
+        UserDao.cleanUsersTable();
     }
 }
